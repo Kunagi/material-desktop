@@ -108,3 +108,93 @@
                           (if-let [exception @!exception]
                             [exception-card exception]
                             comp))}))))
+
+
+;;; form
+
+
+(defn- form-field
+  [{:as field-model
+    :keys [value on-change auto-focus name label type]}
+   !form-state]
+  [:div
+   {:style {:margin "0.5em 0"}}
+   [mui/text-field
+    {:type type
+     :default-value (get-in @!form-state [:vals name])
+     ;; :on-change #(on-change (-> % .-target .-value))
+     :on-change #(swap! !form-state
+                        assoc-in [:vals name ] (-> % .-target .-value))
+     :on-key-press #(when (= 13 (-> % .-charCode))
+                      ((:on-submit @!form-state) @!form-state))
+     :name name
+     :label label
+     :auto-focus auto-focus}]])
+
+
+(defn form
+  [!form-state]
+  (fn [!form-state]
+    (let [form-state @!form-state
+          fields (assoc-in (:fields form-state) [0 :auto-focus] true)]
+      [:div
+       ;; [edn model]
+       ;; [:hr]
+       (into [:div
+              {:style {:display :flex
+                       :flex-direction :column
+                       :margin "-0.5em"}}]
+             (map #(form-field % !form-state)
+                  fields))])))
+
+
+(defn form-dialog
+  [{:as model
+    :keys [title waiting? error-message on-cancel on-submit]}]
+  (let [!form-state (r/atom model)]
+    [mui/dialog
+     {:open true}
+     [mui/dialog-title title]
+     [mui/dialog-content
+      (if waiting?
+        [:div
+         [mui/circular-progress]]
+        [:div
+         [form !form-state]
+         (if error-message
+           [text-body1
+            {:style {:color "red"
+                     :margin-bottom "1em"}}
+            error-message])])]
+     [mui/dialog-actions
+      [mui/button
+       {:on-click on-cancel}
+       "Cancel"]
+      [mui/button
+       {:on-click #(on-submit @!form-state)
+        :disabled waiting?}
+       "Sign In"]]]))
+
+
+;;; cards
+
+(defn card [& args]
+  [error-boundary (into [mui/card] args)])
+
+
+;;; tabs
+
+(defn tabs-paper
+  [options]
+  (let [!tab-index (r/atom (or (:tab-index options) 0))]
+    (fn [options]
+      [mui/paper
+       options
+       [:div
+        (into [mui/tabs
+               {:value @!tab-index
+                :on-change #(reset! !tab-index %2)}]
+              (map (fn [tab] [mui/tab {:label (:label tab)}]) (:tabs options)))
+        [:div
+         {:style {:padding "1em"}}
+         (:content (nth (:tabs options) @!tab-index))]]])))

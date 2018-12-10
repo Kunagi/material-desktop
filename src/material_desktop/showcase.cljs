@@ -52,6 +52,25 @@
     [mdc/text-subheading "Lorem Ipsum"]]
 
    [show-frame
+    {:title "card"}
+    [mdc/card "card text"]]
+
+   [show-frame
+    {:title "tabs-paper"}
+    [mdc/tabs-paper {:tabs [{:label "tab-1"
+                             :content "content of tab-1"}
+                            {:label "tab-2"
+                             :content "content of tab-2"}]}]]
+
+   [show-frame
+    {:title "form"}
+    [mdc/form (r/atom {:fields [{:name :name
+                                 :label "Name"}
+                                {:name :email
+                                 :label "E-Mail"}]
+                       :vals {:name "Witek"}})]]
+
+   [show-frame
     {:title "exception-div"}
     [mdc/exception-div (ex-info "catched and thrown ex-info"
                                 {:with :data}

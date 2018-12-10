@@ -22,12 +22,45 @@
 
 (defn showcase []
   [:div
+
    [show-frame
-    {:title "data (map)"}
-    [mdc/edn {:hello "world"}]]
+    {:title "edn"}
+    [mdc/edn {:key-1 "string" :key-2 [1 2 3]}]]
+
    [show-frame
-    {:title "data (vector)"}
-    [mdc/edn ['hello ::world]]]])
+    {:title "text-body1"}
+    [mdc/text-body1 "Lorem Ipsum"]]
+
+   [show-frame
+    {:title "text-body2"}
+    [mdc/text-body2 "Lorem Ipsum"]]
+
+   [show-frame
+    {:title "text-caption"}
+    [mdc/text-caption "Lorem Ipsum"]]
+
+   [show-frame
+    {:title "text-title"}
+    [mdc/text-title "Lorem Ipsum"]]
+
+   [show-frame
+    {:title "text-headline"}
+    [mdc/text-headline "Lorem Ipsum"]]
+
+   [show-frame
+    {:title "text-subheading"}
+    [mdc/text-subheading "Lorem Ipsum"]]
+
+   [show-frame
+    {:title "exception-div"}
+    [mdc/exception-div (ex-info "catched and thrown ex-info"
+                                {:with :data}
+                                "something failed")]]
+   [show-frame
+    {:title "exception-card"}
+    [mdc/exception-card (ex-info "catched and thrown ex-info"
+                                 {:with :data}
+                                 "something failed")]]])
 
 
 (defn root-ui []

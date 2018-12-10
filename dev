@@ -1,4 +1,4 @@
 #!/bin/bash -e
 
 rm -rf target/*
-clojure --main figwheel.main --build dev
+clojure -A:dev

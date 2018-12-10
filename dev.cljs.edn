@@ -4,4 +4,4 @@
  :closure-defines {material-desktop.init/DEV true
                    "re_frame.trace.trace_enabled_QMARK_" true}
 
- :preloads        [day8.re-frame-10x.preload]}
+ :preloads        [devtools.preload day8.re-frame-10x.preload]}

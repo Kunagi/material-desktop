@@ -1,29 +1,47 @@
 (ns material-desktop.desktop
   (:require
-   [cljs-react-material-ui.reagent :as mui]
-   [cljs-react-material-ui.core :refer [create-mui-theme color]]
-   [cljs-react-material-ui.icons :as icon]
+   ["@material-ui/core" :as mui]
+   ["@material-ui/core/styles" :refer [createMuiTheme withStyles]]
+   ["@material-ui/core/colors" :as mui-colors]
+   ["@material-ui/icons" :as icons]
+   [oops.core :as oops]
    [re-frame.core :as rf]
 
    [material-desktop.components :as mdc]))
 
-(def base-theme
-  (create-mui-theme {:palette {:primary {:main (color :light-blue 700)}}
-                     :secondary {:main (color :teal :A100)}
-                     :text-color (color :common :white)
-                     :typography {:use-next-variants true}}))
+;; (def base-theme
+;;   (createMuiTheme {:palette {:primary {:main (color :light-blue 700)}}
+;;                    :secondary {:main (color :teal :A100)}
+;;                    :text-color (color :common :white)
+;;                    :typography {:use-next-variants true}}))
 
-(defn desktop-app-bar []
-  [mui/app-bar
+(defn color [color-key variant]
+  (-> mui-colors
+      (oops/oget (name color-key))
+      (oops/oget (if (keyword? variant)
+                   (name variant)
+                   (str variant)))))
+
+(def base-theme
+  (createMuiTheme
+   (clj->js
+    {:palette {:primary {:main (color :blueGrey 700)}
+               :secondary {:main (color :green 700)}
+               :text-color (color :common :white)}
+     :typography {:useNextVariants true}})))
+
+
+(defn DesktopAppBar []
+  [:> mui/AppBar
    {:position "static"}
-   [mui/toolbar
-    [mui/icon-button
+   [:> mui/Toolbar
+    [:> mui/IconButton
      {:color :inherit
       :style {:margin-left "-20px"
               :margin-right "20px"}}
-     [icon/menu]]
-    [mui/typography
-     {:variant :title
+     [:> icons/Menu]]
+    [:> mui/Typography
+     {:variant :h5
       :style {:flex-grow "1"}
               ;:font-size "95%"}
       :color :inherit}
@@ -34,37 +52,39 @@
           @(rf/subscribe [::appbar-toolbar-components]))]])
 
 
-(defn desktop-workarea []
+(defn DesktopWorkarea []
     [:div
      {:style {:width "800px"
               :margin "1em auto"}}
      (into [:div#workarea-pre-components]
-           (map (fn [c] [mdc/error-boundary c])
+           (map (fn [c] [mdc/ErrorBoundary c])
                 @(rf/subscribe [::workarea-pre-components])))
      (into [:div#workarea-components]
-           (map (fn [c] [mdc/error-boundary c])
+           (map (fn [c] [mdc/ErrorBoundary c])
                 @(rf/subscribe [::workarea-components])))
      (into [:div#dialogs]
            @(rf/subscribe [::dialogs]))])
 
 
-(defn desktop []
-  [mui/mui-theme-provider
-   {:theme base-theme}
-   [mui/css-baseline]
-   [desktop-app-bar]
-   [desktop-workarea]
-   (into [:div#workarea-post-components]
-         (map (fn [c] [mdc/error-boundary c])
-              @(rf/subscribe [::workarea-post-components])))])
+(defn Desktop []
+  [:div
+   [:> mui/CssBaseline]
+   [:> mui/MuiThemeProvider
+    {:theme base-theme}
+    ;[mui/css-baseline]
+    [DesktopAppBar]
+    [DesktopWorkarea]
+    (into [:div#workarea-post-components]
+          (map (fn [c] [mdc/ErrorBoundary c])
+               @(rf/subscribe [::workarea-post-components])))]])
 
 
 (defn desktop-subscription []
   [:div
    [:hr]
-   [mdc/text-body1
+   [mdc/Text
     "subscription [::desktop] ->"]
-   [mdc/edn @(rf/subscribe [::desktop])]])
+   [mdc/Data @(rf/subscribe [::desktop])]])
 
 
 ;; re-frame subscriptions

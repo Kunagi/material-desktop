@@ -1,6 +1,5 @@
 (ns material-desktop.init
   (:require
-   [cljsjs.material-ui]
    [clojure.spec.alpha :as s]))
 
 (goog-define DEV false)

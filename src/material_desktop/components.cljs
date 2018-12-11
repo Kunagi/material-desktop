@@ -2,10 +2,8 @@
   (:require
    [cljs.pprint :as pprint]
    [reagent.core :as r]
-   [cljsjs.material-ui]
-   [cljs-react-material-ui.reagent :as mui]
-   [cljs-react-material-ui.icons :as icon]))
-
+   ["@material-ui/core" :as mui]
+   ["@material-ui/icons" :as icons]))
 
 ;;; utils
 
@@ -20,16 +18,16 @@
 (defn- with-options [component additional-options children]
   (let [existing-options (first children)]
     (if (map? existing-options)
-      (into [component (deep-merge existing-options additional-options)]
+      (into [:> component (deep-merge existing-options additional-options)]
             (rest children))
-      (into [component additional-options]
+      (into [:> component additional-options]
             children))))
 
 
 ;;; data
 
 
-(defn edn
+(defn Data
   [data]
   [:code
    {:style {:white-space :pre-wrap
@@ -39,31 +37,21 @@
 
 ;;; text
 
-(defn text-body1 [& elements]
-  (with-options mui/typography {:variant :body1} elements))
+(defn Subtitle [& elements]
+  (with-options mui/Typography {:variant :subtitle1} elements))
 
-(defn text-body2 [& elements]
-  (with-options mui/typography {:variant :body2} elements))
+(defn Text [& elements]
+  (with-options mui/Typography {} elements))
 
-(defn text-caption [& elements]
-  (with-options mui/typography {:variant :caption} elements))
+;; (defn Caption [& elements]
+;;   (with-options mui/Typography {:variant :caption} elements))
 
-(defn text-title [& elements]
-  (with-options mui/typography
-    {:variant :title
-     :style {:font-size "95%"}}
-    elements))
-
-(defn text-headline [& elements]
-  (with-options mui/typography {:variant :headline} elements))
-
-(defn text-subheading [& elements]
-  (with-options mui/typography {:variant :subheading} elements))
-
+(defn Overline [& elements]
+  (with-options mui/Typography {:variant :overline} elements))
 
 ;;; exception
 
-(defn exception-div [exception]
+(defn Exception [exception]
   (let [message (.-message exception)
         message (if message message (str exception))
         data (ex-data exception)
@@ -71,42 +59,42 @@
     [:div
      (if cause
        [:div
-        [exception-div cause]
-        [text-caption
+        [Exception cause]
+        [Text
          {:style {:margin-top "1em"}}
          "Consequence:"]])
-     [text-subheading
+     [Subtitle
       {:style {:white-space :pre-wrap}}
       (str message)]
      (if-not (empty? data)
-       [edn data])]))
+       [Data data])]))
 
 
-(defn exception-card [exception]
-  [mui/card
+(defn ExceptionCard [exception]
+  [:> mui/Card
    {:style {:background-color "#FFCDD2"}}
-   [mui/card-content
-    [icon/bug-report
+   [:> mui/CardContent
+    [:> icons/BugReport
      {:style {:float :left}}]
-    (text-title "A bug is making trouble...")
+    (Subtitle "A bug is making trouble...")
     (if exception
       [:div
        {:style {:margin-top "1em"}}
-       [exception-div exception]])]])
+       [Exception exception]])]])
 
 
-(defn error-boundary [comp]
+(defn ErrorBoundary [comp]
   (if comp
     (let [!exception (r/atom nil)]
       (r/create-class
        {:component-did-catch (fn [cause info]
-                               (.error js/console "error-boundary" cause info)
+                               (.error js/console "ErrorBoundary" cause info)
                                (reset! !exception (ex-info (.trim (str (.-componentStack info)))
                                                            {:component comp}
                                                            cause)))
         :reagent-render (fn [comp]
                           (if-let [exception @!exception]
-                            [exception-card exception]
+                            [ExceptionCard exception]
                             comp))}))))
 
 
@@ -119,7 +107,7 @@
    !form-state]
   [:div
    {:style {:margin "0.5em 0"}}
-   [mui/text-field
+   [:> mui/TextField
     {:type type
      :default-value (get-in @!form-state [:vals name])
      ;; :on-change #(on-change (-> % .-target .-value))
@@ -132,7 +120,7 @@
      :auto-focus auto-focus}]])
 
 
-(defn form
+(defn Form
   [!form-state]
   (fn [!form-state]
     (let [form-state @!form-state
@@ -148,29 +136,29 @@
                   fields))])))
 
 
-(defn form-dialog
+(defn FormDialog
   [{:as model
     :keys [title waiting? error-message on-cancel on-submit]}]
   (let [!form-state (r/atom model)]
-    [mui/dialog
+    [:> mui/Dialog
      {:open true}
-     [mui/dialog-title title]
-     [mui/dialog-content
+     [:> mui/DialogTitle title]
+     [:> mui/DialogContent
       (if waiting?
         [:div
-         [mui/circular-progress]]
+         [:> mui/CircularProgress]]
         [:div
-         [form !form-state]
+         [Form !form-state]
          (if error-message
-           [text-body1
+           [Text
             {:style {:color "red"
                      :margin-bottom "1em"}}
             error-message])])]
-     [mui/dialog-actions
-      [mui/button
+     [:> mui/DialogActions
+      [:> mui/Button
        {:on-click on-cancel}
        "Cancel"]
-      [mui/button
+      [:> mui/Button
        {:on-click #(on-submit @!form-state)
         :disabled waiting?}
        "Sign In"]]]))
@@ -178,23 +166,23 @@
 
 ;;; cards
 
-(defn card [& args]
-  [error-boundary (into [mui/card] args)])
+(defn Card [& args]
+  [ErrorBoundary (into [:> mui/Card] args)])
 
 
 ;;; tabs
 
-(defn tabs-paper
+(defn TabsPaper
   [options]
   (let [!tab-index (r/atom (or (:tab-index options) 0))]
     (fn [options]
-      [mui/paper
+      [:> mui/Paper
        options
        [:div
-        (into [mui/tabs
+        (into [:> mui/Tabs
                {:value @!tab-index
                 :on-change #(reset! !tab-index %2)}]
-              (map (fn [tab] [mui/tab {:label (:label tab)}]) (:tabs options)))
+              (map (fn [tab] [:> mui/Tab {:label (:label tab)}]) (:tabs options)))
         [:div
          {:style {:padding "1em"}}
          (:content (nth (:tabs options) @!tab-index))]]])))

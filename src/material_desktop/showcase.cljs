@@ -1,6 +1,6 @@
 (ns ^:figwheel-hooks material-desktop.showcase
   (:require
-   [cljsjs.material-ui]
+   ["@material-ui/icons" :as icons]
    [reagent.core :as r]
    [re-frame.core :as rf]
 
@@ -9,7 +9,7 @@
    [material-desktop.desktop :as desktop]))
 
 
-(defn show-frame [options component]
+(defn Show [options component]
   (let [title (or (:title options) (str (first component)))]
     [:div
      {:style {:margin-top "10px"
@@ -20,71 +20,63 @@
                :color "#333"}}
       component]]))
 
+
 (defn showcase []
   [:div
 
-   [show-frame
-    {:title "edn"}
-    [mdc/edn {:key-1 "string" :key-2 [1 2 3]}]]
+   [Show
+    {:title "Data"}
+    [mdc/Data {:key-1 "string" :key-2 [1 2 3]}]]
 
-   [show-frame
-    {:title "text-body1"}
-    [mdc/text-body1 "Lorem Ipsum"]]
+   [Show
+    {:title "Subtitle"}
+    [mdc/Subtitle "Lorem Ipsum"]]
 
-   [show-frame
-    {:title "text-body2"}
-    [mdc/text-body2 "Lorem Ipsum"]]
+   [Show
+    {:title "Text"}
+    [mdc/Text "Lorem Ipsum"]]
 
-   [show-frame
-    {:title "text-caption"}
-    [mdc/text-caption "Lorem Ipsum"]]
+   [Show
+    {:title "Overline"}
+    [mdc/Overline "Lorem Ipsum"]]
 
-   [show-frame
-    {:title "text-title"}
-    [mdc/text-title "Lorem Ipsum"]]
+   [Show
+    {:title "Icon: Face"}
+    [:> icons/Face]]
 
-   [show-frame
-    {:title "text-headline"}
-    [mdc/text-headline "Lorem Ipsum"]]
+   [Show
+    {:title "Card"}
+    [mdc/Card "card text"]]
 
-   [show-frame
-    {:title "text-subheading"}
-    [mdc/text-subheading "Lorem Ipsum"]]
+   [Show
+    {:title "TabsPaper"}
+    [mdc/TabsPaper {:tabs [{:label "tab-1"
+                            :content "content of tab-1"}
+                           {:label "tab-2"
+                            :content "content of tab-2"}]}]]
 
-   [show-frame
-    {:title "card"}
-    [mdc/card "card text"]]
-
-   [show-frame
-    {:title "tabs-paper"}
-    [mdc/tabs-paper {:tabs [{:label "tab-1"
-                             :content "content of tab-1"}
-                            {:label "tab-2"
-                             :content "content of tab-2"}]}]]
-
-   [show-frame
-    {:title "form"}
-    [mdc/form (r/atom {:fields [{:name :name
+   [Show
+    {:title "Form"}
+    [mdc/Form (r/atom {:fields [{:name :name
                                  :label "Name"}
                                 {:name :email
                                  :label "E-Mail"}]
                        :vals {:name "Witek"}})]]
 
-   [show-frame
-    {:title "exception-div"}
-    [mdc/exception-div (ex-info "catched and thrown ex-info"
+   [Show
+    {:title "Exception"}
+    [mdc/Exception (ex-info "catched and thrown ex-info"
+                            {:with :data}
+                            "something failed")]]
+   [Show
+    {:title "ExceptionCard"}
+    [mdc/ExceptionCard (ex-info "catched and thrown ex-info"
                                 {:with :data}
-                                "something failed")]]
-   [show-frame
-    {:title "exception-card"}
-    [mdc/exception-card (ex-info "catched and thrown ex-info"
-                                 {:with :data}
-                                 "something failed")]]])
-
+                                "something failed")]]])
 
 (defn root-ui []
-  [mdc/error-boundary
-   [desktop/desktop]])
+  [mdc/ErrorBoundary
+   [desktop/Desktop]])
 
 
 (defn mount-app []

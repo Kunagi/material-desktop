@@ -169,6 +169,21 @@
 (defn Card [& args]
   [ErrorBoundary (into [:> mui/Card] args)])
 
+(defn- CardWrapper [& card-args]
+  [:div
+   {:style {:margin-bottom "0.5rem"}}
+   (-> [Card]
+       (into card-args))])
+
+
+(defn CardContent [& args]
+  (into [:> mui/CardContent] args))
+
+
+(defn CardsColumn [model]
+  (-> [:div.CardsColumn]
+      (into (map (fn [card] [CardWrapper card])) (:cards model))))
+
 
 ;;; tabs
 

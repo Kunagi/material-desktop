@@ -87,11 +87,19 @@
   (if comp
     (let [!exception (r/atom nil)]
       (r/create-class
-       {:component-did-catch (fn [cause info]
-                               (.error js/console "ErrorBoundary" cause info)
-                               (reset! !exception (ex-info (.trim (str (.-componentStack info)))
-                                                           {:component comp}
-                                                           cause)))
+       {:component-did-catch (fn [this cause info]
+                               (.error js/console
+                                       "ErrorBoundary"
+                                       "\nthis:" this
+                                       "\ne:" cause
+                                       "\ninfo:" info)
+                               (let [stack (.-componentStack info)
+                                     message (if stack
+                                               (.trim (str stack))
+                                               (str info))]
+                                 (reset! !exception (ex-info message
+                                                             {:component comp}
+                                                             cause))))
         :reagent-render (fn [comp]
                           (if-let [exception @!exception]
                             [ExceptionCard exception]
@@ -162,6 +170,24 @@
        {:on-click #(on-submit @!form-state)
         :disabled waiting?}
        "Sign In"]]]))
+
+
+;;; buttons
+
+(defn Button
+  [options & contents]
+  (into [:> mui/Button (merge {} options)]
+        contents))
+
+;; (defn FloatButton
+;;   [options & contents]
+;;   [:> mui/Fab [:> icons/Add]])
+
+
+(defn IconButton
+  [options & contents]
+  (into [:> mui/IconButton (merge {} options)]
+        contents))
 
 
 ;;; cards

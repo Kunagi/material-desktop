@@ -53,17 +53,18 @@
 
 
 (defn DesktopWorkarea []
-    [:div
-     {:style {:width "800px"
-              :margin "1em auto"}}
-     (into [:div#workarea-pre-components]
-           (map (fn [c] [mdc/ErrorBoundary c])
-                @(rf/subscribe [::workarea-pre-components])))
-     (into [:div#workarea-components]
-           (map (fn [c] [mdc/ErrorBoundary c])
-                @(rf/subscribe [::workarea-components])))
-     (into [:div#dialogs]
-           @(rf/subscribe [::dialogs]))])
+  [:div
+   {:style {:margin "1rem"}}
+     ;; {:style {:width "800px"
+     ;;          :margin "1em auto"}}
+   (into [:div#workarea-pre-components]
+         (map (fn [c] [mdc/ErrorBoundary c])
+              @(rf/subscribe [::workarea-pre-components])))
+   (into [:div#workarea-components]
+         (map (fn [c] [mdc/ErrorBoundary c])
+              @(rf/subscribe [::workarea-components])))
+   (into [:div#dialogs]
+         @(rf/subscribe [::dialogs]))])
 
 
 (defn Desktop []

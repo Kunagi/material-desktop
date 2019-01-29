@@ -4,7 +4,7 @@
    ["@material-ui/core/styles" :refer [createMuiTheme withStyles]]
    ["@material-ui/core/colors" :as mui-colors]
    ["@material-ui/icons" :as icons]
-   [oops.core :as oops]
+   [goog.object :as gobj]
    [re-frame.core :as rf]
 
    [material-desktop.components :as mdc]))
@@ -15,19 +15,14 @@
 ;;                    :text-color (color :common :white)
 ;;                    :typography {:use-next-variants true}}))
 
-(defn color [color-key variant]
-  (-> mui-colors
-      (oops/oget (name color-key))
-      (oops/oget (if (keyword? variant)
-                   (name variant)
-                   (str variant)))))
+
 
 (def base-theme
   (createMuiTheme
    (clj->js
-    {:palette {:primary {:main (color :blueGrey 700)}
-               :secondary {:main (color :green 700)}
-               :text-color (color :common :white)}
+    {:palette {:primary {:main (gobj/get (.-blueGrey mui-colors) 700)}
+               :secondary {:main (gobj/get (.-green mui-colors) 700)}
+               :text-color (gobj/get (.-red mui-colors) 700)}
      :typography {:useNextVariants true}})))
 
 

@@ -210,7 +210,6 @@
   (-> [:div.CardsColumn]
       (into (map (fn [card] [CardWrapper card])) (:cards model))))
 
-
 ;;; tabs
 
 (defn TabsPaper

@@ -9,9 +9,10 @@
 (defn ExpansionPanel [panel-model]
   [:> mui/ExpansionPanel
    [:> mui/ExpansionPanelSummary
+    {:expand-icon (r/as-element [:> icons/ExpandMore])}
     (get-in panel-model [:summary :text])]
    [:> mui/ExpansionPanelDetails
-    "details"]])
+    [(get-in panel-model [:details :component]) panel-model]]])
 
 (defn ExpansionPanelList [list-model]
   (into [:div]

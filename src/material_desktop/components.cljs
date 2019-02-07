@@ -175,10 +175,46 @@
 
 ;;; buttons
 
+(defn button-options [options]
+  (cond-> {:variant :contained
+           :on-click (:on-click options)}
+
+          (:full-width? options)
+          (assoc-in [:style :width] "100%")))
+
+
 (defn Button
-  [options & contents]
-  (into [:> mui/Button (merge {} options)]
-        contents))
+  [& {:as options :keys [text]}]
+  [:> mui/Button
+   (button-options options)
+   text])
+
+
+(defn ButtonsColumn
+  [& {:as options :keys [buttons
+                         title]}]
+  (into [:div
+         {:style {:display :flex
+                  :flex-direction :column}}
+         (if title
+           [:div
+            {:style {:color "#455a64"
+                     :text-transform :uppercase
+                     :font-size "90%"
+                     :border-bottom "2px solid #455a64"
+                     :margin-bottom "0.5rem"}}
+            title])]
+            ;; {:stlye {:border-bottom "1px solid grey"
+            ;;          :border "1px solid red"}}
+            ;; (Overline title)])]
+        (mapv (fn [button]
+                [:div
+                 {:style {:padding "4px 0"}}
+                 (into [Button
+                        :full-width? true]
+                       (apply concat button))])
+              buttons)))
+
 
 ;; (defn FloatButton
 ;;   [options & contents]

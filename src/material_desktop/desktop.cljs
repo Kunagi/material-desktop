@@ -64,6 +64,8 @@
 
 (defn Desktop []
   [:div
+   {:style {:font-family "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif"
+            :color "#333"}}
    [:> mui/CssBaseline]
    [:> mui/MuiThemeProvider
     {:theme base-theme}

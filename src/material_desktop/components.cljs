@@ -5,6 +5,7 @@
    ["@material-ui/core" :as mui]
    ["@material-ui/icons" :as icons]))
 
+
 ;;; utils
 
 (defn- deep-merge [v & vs]
@@ -209,6 +210,7 @@
 (defn CardsColumn [model]
   (-> [:div.CardsColumn]
       (into (map (fn [card] [CardWrapper card])) (:cards model))))
+
 
 ;;; tabs
 

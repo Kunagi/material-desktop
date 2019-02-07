@@ -6,7 +6,8 @@
 
    [material-desktop.init :as init]
    [material-desktop.components :as mdc]
-   [material-desktop.desktop :as desktop]))
+   [material-desktop.desktop :as desktop]
+   [material-desktop.expansion-panel-list :as expansion-panel-list]))
 
 
 (defn Show [options component]
@@ -23,6 +24,16 @@
 
 (defn showcase []
   [:div
+
+   [Show
+    {:title "ExpansionPanelList"}
+    [expansion-panel-list/ExpansionPanelList
+     {:panels [
+               {}
+               {}
+               {}
+               {}
+               {}]}]]
 
    [Show
     {:title "Data"}
@@ -46,7 +57,9 @@
 
    [Show
     {:title "Card"}
-    [mdc/Card "card text"]]
+    [mdc/Card
+     [mdc/CardContent
+      "card content"]]]
 
    [Show
     {:title "TabsPaper"}

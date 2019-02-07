@@ -26,6 +26,13 @@
   [:div
 
    [Show
+    {:title "ButtonsColumn"}
+    [mdc/ButtonsColumn
+     :buttons [{:text "Click me"}
+               {:text "No, click me."}
+               {:text "Not me"}]]]
+
+   [Show
     {:title "ExpansionPanelList"}
     [expansion-panel-list/ExpansionPanelList
      {:panels [

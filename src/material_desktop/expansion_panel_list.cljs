@@ -10,7 +10,9 @@
   [:> mui/ExpansionPanel
    [:> mui/ExpansionPanelSummary
     {:expand-icon (r/as-element [:> icons/ExpandMore])}
-    (get-in panel-model [:summary :text])]
+    [:div
+     {:style {:font-weight 500}}
+     (get-in panel-model [:summary :text])]]
    [:> mui/ExpansionPanelDetails
     [(get-in panel-model [:details :component]) panel-model]]])
 

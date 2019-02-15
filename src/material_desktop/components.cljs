@@ -177,7 +177,9 @@
 
 (defn button-options [options]
   (cond-> {:variant :contained
-           :on-click (:on-click options)}
+           :on-click (if-let [href (:href options)]
+                       #(set! (.-location js/window) href)
+                       (:on-click options))}
 
           (:full-width? options)
           (assoc-in [:style :width] "100%")))

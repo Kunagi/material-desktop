@@ -26,7 +26,8 @@
      :typography {:useNextVariants true}})))
 
 
-(defn DesktopAppBar []
+(defn DesktopAppBar [& {:as options :keys [title
+                                           toolbar-components]}]
   [:> mui/AppBar
    {:position "static"}
    [:> mui/Toolbar
@@ -40,29 +41,30 @@
       :style {:flex-grow "1"}
               ;:font-size "95%"}
       :color :inherit}
-     @(rf/subscribe [::title])]
+     title]
 
     (into [:div
            {:style {:display :flex}}]
-          @(rf/subscribe [::appbar-toolbar-components]))]])
+          toolbar-components)]])
 
 
-(defn DesktopWorkarea []
+(defn DesktopWorkarea [& {:as options :keys [components]}]
   [:div
    {:style {:margin "1rem"}}
      ;; {:style {:width "800px"
      ;;          :margin "1em auto"}}
-   (into [:div#workarea-pre-components]
-         (map (fn [c] [mdc/ErrorBoundary c])
-              @(rf/subscribe [::workarea-pre-components])))
+   ;; (into [:div#workarea-pre-components]
+   ;;       (map (fn [c] [mdc/ErrorBoundary c])
+   ;;            @(rf/subscribe [::workarea-pre-components])))
    (into [:div#workarea-components]
          (map (fn [c] [mdc/ErrorBoundary c])
-              @(rf/subscribe [::workarea-components])))
-   (into [:div#dialogs]
-         @(rf/subscribe [::dialogs]))])
+              components))])
+   ;; (into [:div#dialogs]
+   ;;       @(rf/subscribe [::dialogs]))])
 
 
-(defn Desktop []
+(defn Desktop [& {:as options :keys [appbar
+                                     workarea]}]
   [:div
    {:style {:font-family "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif"
             :color "#333"}}
@@ -70,11 +72,11 @@
    [:> mui/MuiThemeProvider
     {:theme base-theme}
     ;[mui/css-baseline]
-    [DesktopAppBar]
-    [DesktopWorkarea]
-    (into [:div#workarea-post-components]
-          (map (fn [c] [mdc/ErrorBoundary c])
-               @(rf/subscribe [::workarea-post-components])))]])
+    (into [DesktopAppBar] (apply concat appbar))
+    (into [DesktopWorkarea] (apply concat workarea))]])
+    ;; (into [:div#workarea-post-components]
+    ;;       (map (fn [c] [mdc/ErrorBoundary c])
+    ;;            @(rf/subscribe [::workarea-post-components])))]])
 
 
 (defn desktop-subscription []

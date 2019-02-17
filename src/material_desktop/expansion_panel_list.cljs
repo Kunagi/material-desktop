@@ -6,6 +6,7 @@
 
 ;;; ExpansionPanel
 
+;; TODO & args
 (defn ExpansionPanel [panel-model]
   [:> mui/ExpansionPanel
    [:> mui/ExpansionPanelSummary
@@ -14,8 +15,9 @@
      {:style {:font-weight 500}}
      (get-in panel-model [:summary :text])]]
    [:> mui/ExpansionPanelDetails
-    [(get-in panel-model [:details :component]) panel-model]]])
+    (get-in panel-model [:details :component])]])
 
+;; TODO & args
 (defn ExpansionPanelList [list-model]
   (into [:div]
         (mapv (fn [panel-model]

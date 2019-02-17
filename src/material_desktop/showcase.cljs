@@ -36,11 +36,14 @@
     {:title "ExpansionPanelList"}
     [expansion-panel-list/ExpansionPanelList
      {:panels [
-               {}
-               {}
-               {}
-               {}
-               {}]}]]
+               {:summary {:text "panel 1"}
+                :details {:component [:div [:h3 "some"] "details"]}}
+               {:summary {:text "panel 2"}
+                :details {:component "details"}}
+               {:summary {:text "panel 3"}
+                :details {:component "details"}}
+               {:summary {:text "panel 4"}
+                :details {:component "details"}}]}]]
 
    [Show
     {:title "Data"}
@@ -85,12 +88,12 @@
 
    [Show
     {:title "Exception"}
-    [mdc/Exception (ex-info "catched and thrown ex-info"
+    [mdc/Exception (ex-info "catched an thrown ex-info"
                             {:with :data}
                             "something failed")]]
    [Show
     {:title "ExceptionCard"}
-    [mdc/ExceptionCard (ex-info "catched and thrown ex-info"
+    [mdc/ExceptionCard (ex-info "catched an thrown ex-info"
                                 {:with :data}
                                 "something failed")]]])
 

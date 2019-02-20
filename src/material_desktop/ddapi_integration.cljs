@@ -25,14 +25,15 @@
 (defn- reg-query-sub
   [query api-id db-subscription-id db-instance-identifier-args-key]
   (let [query-id (:id query)]
-    (prn "QUERY SUB" query-id)
     (rf/reg-sub
      query-id
      (fn [[_ args]]
        (rf/subscribe [db-subscription-id args]))
      (fn [api-db [_ args]]
-       (let [args (dissoc args db-instance-identifier-args-key)]
-         (ddapi/<query api-db query-id args))))))
+       (if-not api-db
+         nil
+         (let [args (dissoc args db-instance-identifier-args-key)]
+           (ddapi/<query api-db query-id args)))))))
 
 
 

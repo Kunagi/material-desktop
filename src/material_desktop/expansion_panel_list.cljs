@@ -7,19 +7,22 @@
 ;;; ExpansionPanel
 
 ;; TODO & args
-(defn ExpansionPanel [panel-model]
+(defn ExpansionPanel
+  [{:as panel-model :keys [summary details]}]
   [:> mui/ExpansionPanel
    [:> mui/ExpansionPanelSummary
     {:expand-icon (r/as-element [:> icons/ExpandMore])}
     [:div
      {:style {:font-weight 500}}
-     (get-in panel-model [:summary :text])]]
+     (:text summary)]]
    [:> mui/ExpansionPanelDetails
-    (get-in panel-model [:details :component])]])
+    (or (:component details)
+        [:div "ExpansionPanel: [:details :component] missing"])]])
 
 ;; TODO & args
-(defn ExpansionPanelList [list-model]
+(defn ExpansionPanelList
+  [& {:as options :keys [panels]}]
   (into [:div]
         (mapv (fn [panel-model]
                 [ExpansionPanel panel-model])
-              (:panels list-model))))
+              panels)))

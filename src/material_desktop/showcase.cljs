@@ -128,4 +128,3 @@
        (assoc-in [::desktop/desktop :workarea :components :showcase] [[showcase]]))))
 
 
-(start)

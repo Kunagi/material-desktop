@@ -3,7 +3,22 @@
    [cljs.pprint :as pprint]
    [reagent.core :as r]
    ["@material-ui/core" :as mui]
-   ["@material-ui/icons" :as icons]))
+   ["@material-ui/icons" :as icons]
+   ["@material-ui/core/colors" :as mui-colors]
+   [goog.object :as gobj]))
+
+
+;;; color palette
+
+(def palette
+  {:primary {:main (gobj/get (.-blueGrey mui-colors) 700)}
+   :secondary {:main (gobj/get (.-green mui-colors) 700)}
+   :text-color (gobj/get (.-red mui-colors) 700)})
+
+(def spacing-base 8)
+
+(defn spacing [factor]
+  (str (* factor spacing-base) "px"))
 
 
 ;;; utils
@@ -25,6 +40,17 @@
             children))))
 
 
+;;; ---
+
+
+(defn Spacer
+  ([size]
+   (Spacer size size))
+  ([width height]
+   [:div.Spacer
+    {:style {:width (spacing width)
+             :height (spacing height)}}]))
+
 ;;; data
 
 
@@ -34,6 +60,18 @@
    {:style {:white-space :pre-wrap
             :overflow :auto}}
    (with-out-str (pprint/pprint data))])
+
+
+;;; paper
+
+(defn Paper [options & components]
+  (into [:> mui/Paper
+            options]
+        components))
+
+
+;;; toolbar
+
 
 
 ;;; text
@@ -49,6 +87,21 @@
 
 (defn Overline [& elements]
   (with-options mui/Typography {:variant :overline} elements))
+
+
+(defn- Double-_ [tag text-1 text-2]
+  [tag
+   [:span {:style {:font-weight 700}}  text-1  " "]
+   [:span {:style {:font-weight 100}}  "| "    text-2]])
+
+(defn Double-H1 [text-1 text-2] (Double-_ :h1 text-1 text-2))
+(defn Double-H2 [text-1 text-2] (Double-_ :h2 text-1 text-2))
+(defn Double-H3 [text-1 text-2] (Double-_ :h3 text-1 text-2))
+(defn Double-H4 [text-1 text-2] (Double-_ :h4 text-1 text-2))
+(defn Double-H5 [text-1 text-2] (Double-_ :h5 text-1 text-2))
+(defn Double-DIV [text-1 text-2] (Double-_ :div text-1 text-2))
+
+
 
 ;;; exception
 
@@ -229,6 +282,21 @@
         contents))
 
 
+;;; layouts
+
+
+(defn Columns
+  [& components]
+  (into [:div
+         {:style {:display :flex
+                  :margin "0 -0.5rem"}}]
+        (mapv (fn [column]
+                [:div
+                 {:style {:margin "0 0.5rem"}}
+                 column])
+              components)))
+
+
 ;;; cards
 
 (defn Card [& args]
@@ -245,9 +313,9 @@
   (into [:> mui/CardContent] args))
 
 
-(defn CardsColumn [model]
+(defn CardsColumn [& {:keys [cards]}]
   (-> [:div.CardsColumn]
-      (into (map (fn [card] [CardWrapper card])) (:cards model))))
+      (into (map (fn [card] [CardWrapper card])) cards)))
 
 
 ;;; tabs

@@ -2,7 +2,6 @@
   (:require
    ["@material-ui/core" :as mui]
    ["@material-ui/core/styles" :refer [createMuiTheme withStyles]]
-   ["@material-ui/core/colors" :as mui-colors]
    ["@material-ui/icons" :as icons]
    [goog.object :as gobj]
    [re-frame.core :as rf]
@@ -16,14 +15,10 @@
 ;;                    :typography {:use-next-variants true}}))
 
 
+(def theme {:palette mdc/palette
+            :typography {:useNextVariants true}})
 
-(def base-theme
-  (createMuiTheme
-   (clj->js
-    {:palette {:primary {:main (gobj/get (.-blueGrey mui-colors) 700)}
-               :secondary {:main (gobj/get (.-green mui-colors) 700)}
-               :text-color (gobj/get (.-red mui-colors) 700)}
-     :typography {:useNextVariants true}})))
+(def base-theme (createMuiTheme (clj->js theme)))
 
 
 (defn DesktopAppBar [& {:as options :keys [title
@@ -38,7 +33,7 @@
      [:> icons/Menu]]
     [:> mui/Typography
      {:variant :h5
-      :style {:flex-grow "1"}
+      :style {:flex-grow 1}
               ;:font-size "95%"}
       :color :inherit}
      title]

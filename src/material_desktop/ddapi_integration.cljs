@@ -33,7 +33,7 @@
        (if-not api-db
          nil
          (let [args (dissoc args db-instance-identifier-args-key)]
-           (ddapi/<query api-db query-id args)))))))
+           (ddapi/<query api-db [query-id args])))))))
 
 
 (defn- reg-event
@@ -42,7 +42,8 @@
     (rf/reg-event-db
      event-id
      (fn [db [_ args]]
-       (let [db-instance-identifier (if db-instance-identifier-args-key
+       (let [args (or args {})
+             db-instance-identifier (if db-instance-identifier-args-key
                                       (get args
                                            db-instance-identifier-args-key)
                                       :singleton)

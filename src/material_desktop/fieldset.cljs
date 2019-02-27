@@ -17,18 +17,31 @@
    text])
 
 
+(defn make-clickable [predicate? on-click component]
+  (if-not predicate?
+    component
+    [:div
+     {:on-click on-click
+      :style {:cursor :pointer}}
+     component]))
+
+
 (defn Field [& {:as options :keys [label
-                                   value]}]
-  [:div.Fieldset--Field
-   {:style {:margin-bottom field-spacing
-            :margin-right field-spacing}}
-            ;;:background-color "#f7f8fa"
-            ;;:padding "0.5rem"
-            ;;:border-radius "5px"}}
-   (into [Label] (apply concat (conform-label label)))
-   [:div
-    {:style {:margin-top "0.3rem"}}
-    value]])
+                                   value
+                                   on-click]}]
+  (make-clickable
+   on-click
+   on-click
+   [:div.Fieldset--Field
+    {:style {:margin-bottom field-spacing
+             :margin-right field-spacing}}
+             ;;:background-color "#f7f8fa"
+             ;;:padding "0.5rem"
+             ;;:border-radius "5px"}}
+    (into [Label] (apply concat (conform-label label)))
+    [:div
+     {:style {:margin-top "0.3rem"}}
+     value]]))
 
 
 (defn Row [& {:as options :keys [fields]}]

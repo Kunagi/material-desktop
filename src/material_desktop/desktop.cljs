@@ -6,7 +6,11 @@
    [goog.object :as gobj]
    [re-frame.core :as rf]
 
-   [material-desktop.components :as mdc]))
+   [material-desktop.desktop-api]
+   [material-desktop.api :refer [<subscribe dispatch>]]
+   [material-desktop.components :as mdc]
+   [material-desktop.editing :as editing]))
+
 
 ;; (def base-theme
 ;;   (createMuiTheme {:palette {:primary {:main (color :light-blue 700)}}
@@ -43,6 +47,8 @@
           toolbar-components)]])
 
 
+
+
 (defn DesktopWorkarea [& {:as options :keys [components]}]
   [:div
    {:style {:margin "1rem"}}
@@ -58,6 +64,19 @@
    ;;       @(rf/subscribe [::dialogs]))])
 
 
+(defn FormDialog_ [dialog]
+  (let [form-query (:form-query dialog)
+        form (if form-query (<subscribe (:form-query dialog)))]
+    [editing/FormDialog
+     :open? (-> dialog :open?)
+     :form form]))
+
+
+(defn FormDialog []
+  (let [dialog (<subscribe [:desktop/form-dialog])]
+    [FormDialog_ dialog]))
+
+
 (defn Desktop [& {:as options :keys [appbar
                                      workarea]}]
   [:div
@@ -66,50 +85,9 @@
    [:> mui/CssBaseline]
    [:> mui/MuiThemeProvider
     {:theme base-theme}
-    ;[mui/css-baseline]
     (into [DesktopAppBar] (apply concat appbar))
-    (into [DesktopWorkarea] (apply concat workarea))]])
+    (into [DesktopWorkarea] (apply concat workarea))
+    [FormDialog]]])
     ;; (into [:div#workarea-post-components]
     ;;       (map (fn [c] [mdc/ErrorBoundary c])
     ;;            @(rf/subscribe [::workarea-post-components])))]])
-
-
-(defn desktop-subscription []
-  [:div
-   [:hr]
-   [mdc/Text
-    "subscription [::desktop] ->"]
-   [mdc/Data @(rf/subscribe [::desktop])]])
-
-
-;; re-frame subscriptions
-
-
-(rf/reg-sub
- ::desktop
- (fn [db _]
-   (get db ::desktop)))
-
-
-(rf/reg-sub
- ::title
- :<- [::desktop]
- (fn [desktop _]
-   (get-in desktop [:appbar :title])))
-
-
-(defn reg-sub-desktop-components [subscription-name path]
-  (rf/reg-sub
-   subscription-name
-   :<- [::desktop]
-   (fn [desktop _]
-     (-> desktop
-         (get-in path)
-         (vals)
-         (->> (reduce into []))))))
-
-(reg-sub-desktop-components ::dialogs [:dialogs])
-(reg-sub-desktop-components ::appbar-toolbar-components [:appbar :toolbar-components])
-(reg-sub-desktop-components ::workarea-pre-components [:workarea :pre-components])
-(reg-sub-desktop-components ::workarea-components [:workarea :components])
-(reg-sub-desktop-components ::workarea-post-components [:workarea :post-components])

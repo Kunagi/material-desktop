@@ -7,6 +7,7 @@
                                "../appkernel/src"
                                "../bindscript/src"
                                "../browser-headsup/src"
+                               "../conform/src"
                                "../facts-db/src"],
                  :main-opts ["--main" "figwheel.main" "--build" "dev"]},
            :prod-js {:extra-deps {com.bhauman/figwheel-main {:mvn/version "RELEASE"}},

@@ -6,7 +6,7 @@
 
    [material-desktop.init :as init]
    [material-desktop.components :as mdc]
-   [material-desktop.desktop :as desktop]
+   [material-desktop.desktop.components.desktop :as desktop]
    [material-desktop.expansion-panel-list :as expansion-panel-list]))
 
 
@@ -111,20 +111,8 @@
 (defn ^:export start
   []
   (init/install-roboto-css)
-  (rf/dispatch-sync [::init])
   (mount-app))
 
 
 (defn ^:after-load on-figwheel-after-load []
-  (rf/dispatch-sync [::init])
   (mount-app))
-
-
-(rf/reg-event-db
- ::init
- (fn [db _]
-   (-> db
-       (assoc-in [::desktop/desktop :appbar :title] "Material Desktop Showcase")
-       (assoc-in [::desktop/desktop :workarea :components :showcase] [[showcase]]))))
-
-

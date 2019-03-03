@@ -1,4 +1,4 @@
-(ns material-desktop.desktop
+(ns material-desktop.desktop.components.desktop
   (:require
    ["@material-ui/core" :as mui]
    ["@material-ui/core/styles" :refer [createMuiTheme withStyles]]
@@ -6,17 +6,12 @@
    [goog.object :as gobj]
    [re-frame.core :as rf]
 
-   [material-desktop.desktop-api]
+   [material-desktop.desktop.subs]
+   [material-desktop.desktop.events]
+
    [material-desktop.api :refer [<subscribe dispatch>]]
    [material-desktop.components :as mdc]
-   [material-desktop.editing :as editing]))
-
-
-;; (def base-theme
-;;   (createMuiTheme {:palette {:primary {:main (color :light-blue 700)}}
-;;                    :secondary {:main (color :teal :A100)}
-;;                    :text-color (color :common :white)
-;;                    :typography {:use-next-variants true}}))
+   [material-desktop.desktop.components.form-dialog :as form-dialog]))
 
 
 (def theme {:palette mdc/palette
@@ -47,8 +42,6 @@
           toolbar-components)]])
 
 
-
-
 (defn DesktopWorkarea [& {:as options :keys [components]}]
   [:div
    {:style {:margin "1rem"}}
@@ -64,21 +57,9 @@
    ;;       @(rf/subscribe [::dialogs]))])
 
 
-(defn FormDialog_ [dialog]
-  (let [form-query (:form-query dialog)
-        form (if form-query (<subscribe (:form-query dialog)))]
-    [editing/FormDialog
-     :open? (-> dialog :open?)
-     :form form]))
 
-
-(defn FormDialog []
-  (let [dialog (<subscribe [:desktop/form-dialog])]
-    [FormDialog_ dialog]))
-
-
-(defn Desktop [& {:as options :keys [appbar
-                                     workarea]}]
+(defn Desktop [{:as options :keys [appbar
+                                   workarea]}]
   [:div
    {:style {:font-family "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif"
             :color "#333"}}
@@ -87,7 +68,12 @@
     {:theme base-theme}
     (into [DesktopAppBar] (apply concat appbar))
     (into [DesktopWorkarea] (apply concat workarea))
-    [FormDialog]]])
-    ;; (into [:div#workarea-post-components]
-    ;;       (map (fn [c] [mdc/ErrorBoundary c])
-    ;;            @(rf/subscribe [::workarea-post-components])))]])
+    [form-dialog/FormDialog!]]])
+
+
+(defn PagedDesktop [{:as options :keys [pages
+                                        home-page]}]
+  (let [current-page-key (<subscribe [:material-desktop/current-page-key])
+        current-page-key (or current-page-key home-page)
+        current-page (get pages current-page-key)]
+    [Desktop current-page]))

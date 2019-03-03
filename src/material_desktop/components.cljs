@@ -13,7 +13,9 @@
 (def palette
   {:primary {:main (gobj/get (.-blueGrey mui-colors) 700)}
    :secondary {:main (gobj/get (.-green mui-colors) 700)}
-   :text-color (gobj/get (.-red mui-colors) 700)})
+   :text-color (gobj/get (.-red mui-colors) 700)
+
+   :greyed "#aaa"})
 
 (def spacing-base 8)
 

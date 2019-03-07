@@ -2,8 +2,9 @@
 
 
 (defn activate-page [db page-key args]
-  (assoc-in db [:material-desktop/desktop :current-page] {:key page-key
-                                                          :args args}))
+  (-> db
+      (assoc-in [:material-desktop/desktop :current-page] page-key)
+      (update-in [:material-desktop/desktop :pages page-key :args] merge args)))
 
 
 (defn open-form-dialog [db & {:as options :keys [submit-event]}]

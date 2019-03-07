@@ -21,7 +21,8 @@
 
 
 (defn DesktopAppBar [{:as options :keys [title
-                                         toolbar-components]}]
+                                         toolbar-components]}
+                     page-args]
   [:> mui/AppBar
    {:position "static"}
    [:> mui/Toolbar
@@ -39,10 +40,13 @@
 
     (into [:div
            {:style {:display :flex}}]
+          ;;TODO page-args
           toolbar-components)]])
 
 
-(defn DesktopWorkarea [{:as options :keys [components]}]
+(defn DesktopWorkarea
+  [{:as options :keys [components]}
+   page-args]
   [:div
    {:style {:margin "1rem"}}
      ;; {:style {:width "800px"
@@ -51,7 +55,7 @@
    ;;       (map (fn [c] [mdc/ErrorBoundary c])
    ;;            @(rf/subscribe [::workarea-pre-components])))
    (into [:div#workarea-components]
-         (map (fn [c] [mdc/ErrorBoundary c])
+         (map (fn [c] [mdc/ErrorBoundary (conj c page-args)])
               components))])
    ;; (into [:div#dialogs]
    ;;       @(rf/subscribe [::dialogs]))])
@@ -59,26 +63,29 @@
 
 
 (defn Desktop [{:as options :keys [appbar
-                                   workarea]}]
+                                   workarea
+                                   page-args]}]
   [:div
    {:style {:font-family "\"Roboto\", \"Helvetica\", \"Arial\", sans-serif"
             :color "#333"}}
    [:> mui/CssBaseline]
    [:> mui/MuiThemeProvider
     {:theme base-theme}
-    [DesktopAppBar appbar]
-    [DesktopWorkarea workarea]
+    [DesktopAppBar appbar page-args]
+    [DesktopWorkarea workarea page-args]
     [form-dialog/FormDialog!]]])
 
 
 (defn PagedDesktop [{:as options :keys [appbar
                                         pages
                                         home-page]}]
-  (let [current-page-key (<subscribe [:material-desktop/current-page-key])
-        current-page-key (or current-page-key home-page)
+  (let [current-page-info (<subscribe [:material-desktop/current-page {:default-page-key home-page}])
+        current-page-key (:key current-page-info)
         current-page (get pages current-page-key)
+        args (:args current-page-info)
         toolbar-components (-> []
                                (into (-> current-page :appbar :toolbar-components))
                                (into (-> appbar :toolbar-components)))
         current-page (assoc-in current-page [:appbar :toolbar-components] toolbar-components)]
-    [Desktop current-page]))
+    [Desktop (-> current-page
+                 (assoc :page-args args))]))

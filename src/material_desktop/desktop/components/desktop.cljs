@@ -20,8 +20,8 @@
 (def base-theme (createMuiTheme (clj->js theme)))
 
 
-(defn DesktopAppBar [& {:as options :keys [title
-                                           toolbar-components]}]
+(defn DesktopAppBar [{:as options :keys [title
+                                         toolbar-components]}]
   [:> mui/AppBar
    {:position "static"}
    [:> mui/Toolbar
@@ -42,7 +42,7 @@
           toolbar-components)]])
 
 
-(defn DesktopWorkarea [& {:as options :keys [components]}]
+(defn DesktopWorkarea [{:as options :keys [components]}]
   [:div
    {:style {:margin "1rem"}}
      ;; {:style {:width "800px"
@@ -66,14 +66,19 @@
    [:> mui/CssBaseline]
    [:> mui/MuiThemeProvider
     {:theme base-theme}
-    (into [DesktopAppBar] (apply concat appbar))
-    (into [DesktopWorkarea] (apply concat workarea))
+    [DesktopAppBar appbar]
+    [DesktopWorkarea workarea]
     [form-dialog/FormDialog!]]])
 
 
-(defn PagedDesktop [{:as options :keys [pages
+(defn PagedDesktop [{:as options :keys [appbar
+                                        pages
                                         home-page]}]
   (let [current-page-key (<subscribe [:material-desktop/current-page-key])
         current-page-key (or current-page-key home-page)
-        current-page (get pages current-page-key)]
+        current-page (get pages current-page-key)
+        toolbar-components (-> []
+                               (into (-> current-page :appbar :toolbar-components))
+                               (into (-> appbar :toolbar-components)))
+        current-page (assoc-in current-page [:appbar :toolbar-components] toolbar-components)]
     [Desktop current-page]))

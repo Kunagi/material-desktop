@@ -5,7 +5,9 @@
    ["@material-ui/core" :as mui]
    ["@material-ui/icons" :as icons]
    ["@material-ui/core/colors" :as mui-colors]
-   [goog.object :as gobj]))
+   [goog.object :as gobj]
+
+   [material-desktop.api :refer [<subscribe]]))
 
 
 ;;; color palette
@@ -62,6 +64,18 @@
    {:style {:white-space :pre-wrap
             :overflow :auto}}
    (with-out-str (pprint/pprint data))])
+
+;;; progress boundary
+
+
+(defn DataProgressBoundary [component-f data]
+  (if data
+    [component-f data]
+    [:> mui/CircularProgress]))
+
+
+(defn SubscriptionProgressBoundary [component-f subscription]
+  [DataProgressBoundary component-f (<subscribe subscription)])
 
 
 ;;; paper

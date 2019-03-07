@@ -8,7 +8,8 @@
                                "../bindscript/src"
                                "../browser-headsup/src"
                                "../conform/src"
-                               "../facts-db/src"],
+                               "../facts-db/src"
+                               "../model-driver/src"],
                  :main-opts ["--main" "figwheel.main" "--build" "dev"]},
            :prod-js {:extra-deps {com.bhauman/figwheel-main {:mvn/version "RELEASE"}},
                      :main-opts ["--main"

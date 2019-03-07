@@ -301,6 +301,32 @@
 ;;; layouts
 
 
+(defn Column
+  [options & components]
+  (into [:div
+         {:style {:display :flex
+                  :flex-direction :column
+                  :margin (str "-" (spacing 1) " 0")}}]
+        (mapv (fn [component]
+                [:div
+                 {:style {:margin (str (spacing 1) " 0")}}
+                 component])
+              components)))
+
+
+(defn Row
+  [options & components]
+  (into [:div
+         {:style {:display :flex
+                  :margin (str "0 -" (spacing 1))}}]
+        (mapv (fn [component]
+                [:div
+                 {:style {:margin (str "0 " (spacing 1))}}
+                 component])
+              components)))
+
+
+;; TODO delete, deprecated
 (defn Columns
   [& components]
   (into [:div

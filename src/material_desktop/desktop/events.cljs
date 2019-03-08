@@ -3,36 +3,27 @@
    [re-frame.core :as rf]
    [accountant.core :as accountant]
 
-   [bindscript.api :refer [def-bindscript]]
-   [material-desktop.desktop.api :as desktop]))
+   [material-desktop.desktop.api :as desktop]
+   [material-desktop.desktop.navigation :as navigation]))
 
 
-(defn construct-page-path [page-key page-args]
-  (str "/ui/"
-       (namespace page-key) "/" (name page-key)
-       (when-not (empty? page-args)
-         (reduce
-          (fn [path [k v]]
-            (str path
-                 (if (= "" path)  "?" "&")
-                 (js/encodeURIComponent (name k))
-                 "="
-                 (js/encodeURIComponent v)))
-          ""
-          page-args))))
+;;; navigation
 
-
-(def-bindscript ::construct-page-path
-  path (construct-page-path :some/page {:with 1 :args 2}))
+(rf/reg-event-db
+ :material-desktop/desktop.page-switch-requested
+ (fn [db [_ {:keys [page-key page-args]}]]
+   (tap> [::desktop.page-switch-requested page-key page-args])
+   (navigation/navigate! page-key page-args)
+   db))
 
 
 (rf/reg-event-db
- :material-desktop/activate-page
- (fn [db [_ {:keys [page-key page-args]}]]
-   ;; (desktop/activate-page db page-key page-args)))
-   ;;(tap> [::activate-page page-key page-args (construct-page-path page-key page-args)])
-   (accountant/navigate! (construct-page-path page-key page-args))
-   db))
+ :material-desktop/desktop.page-switched
+ (fn [db [_ {:keys [path]}]]
+     (navigation/activate-page-from-url db)))
+
+
+;;; form-dialog
 
 
 (rf/reg-event-db

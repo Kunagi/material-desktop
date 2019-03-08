@@ -1,11 +1,6 @@
 (ns material-desktop.desktop.api)
 
 
-(defn activate-page [db page-key args]
-  (tap> [::activate-page page-key args])
-  (-> db
-      (assoc-in [:material-desktop/desktop :current-page] page-key)
-      (update-in [:material-desktop/desktop :pages page-key :args] merge args)))
 
 
 (defn open-form-dialog [db & {:as options :keys [submit-event]}]

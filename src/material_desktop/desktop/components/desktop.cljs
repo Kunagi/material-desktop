@@ -79,7 +79,7 @@
 (defn PagedDesktop [{:as options :keys [appbar
                                         pages
                                         home-page]}]
-  (let [current-page-info (<subscribe [:material-desktop/current-page {:default-page-key home-page}])
+  (let [current-page-info (<subscribe [:material-desktop/current-page])
         current-page-key (:key current-page-info)
         current-page (get pages current-page-key)
         args (:args current-page-info)

@@ -5,9 +5,8 @@
 
 (rf/reg-sub
  :material-desktop/current-page
- (fn [db [_ {:keys [default-page-key]}]]
+ (fn [db _]
    (let [key (get-in db [:material-desktop/desktop :current-page])
-         key (or key default-page-key)
          args (get-in db [:material-desktop/desktop :pages key :args])]
      {:key key
       :args args})))

@@ -2,6 +2,7 @@
 
 
 (defn activate-page [db page-key args]
+  (tap> [::activate-page page-key args])
   (-> db
       (assoc-in [:material-desktop/desktop :current-page] page-key)
       (update-in [:material-desktop/desktop :pages page-key :args] merge args)))

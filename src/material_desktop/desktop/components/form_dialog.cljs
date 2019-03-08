@@ -53,7 +53,7 @@
                           field-value-change-event]
                    :or {submit-text "Submit"}}]
   [:div
-   [mdc/Data options]
+   ;; [mdc/Data options]
    [:> mui/Dialog
     {:open (boolean open?)}
     (if title

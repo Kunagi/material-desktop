@@ -1,5 +1,4 @@
-{:own [kunagi/appkernel
-       kunagi/facts-db]
+{:own [kunagi/facts-db]
  :foreign {org.clojure/clojurescript {:mvn/version "1.10.520"}
            re-frame                  {:mvn/version "0.10.6"}
            cljsjs/material-ui        {:mvn/version "3.9.1-0"}

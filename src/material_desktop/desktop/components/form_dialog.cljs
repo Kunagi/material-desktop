@@ -19,27 +19,27 @@
    :text TextField})
 
 
-(defn conform-field [field on-submit-event on-change-event]
+(defn conform-field [field]
   (-> field
-      (assoc :on-change #(dispatch> on-change-event
+      (assoc :on-change #(dispatch> [:material-desktop/desktop.form-dialog.field-value-changed {}]
                                     {:key (:key field)
                                      :value (-> % .-target .-value)}))
       (assoc :on-key-down #(when (= 13 (-> % .-keyCode))
-                              (dispatch> on-submit-event)))
+                             (dispatch> [:material-desktop/desktop.form-dialog.submitted])))
       (assoc :variant :filled)
       (assoc :margin :dense)
       (assoc :full-width true)))
 
 
 ;; TODO auto auto-focus first field
-(defn Form [form submit-event field-value-change-event]
+(defn Form [form]
   (let [form-id "some-form-id"
         form-fields (:fields form)]
     [:div.Form
      (into [:div]
            (mapv (fn [{:as field :keys [type] :or {type :text}}]
                    [(field-type->component type)
-                    (conform-field field submit-event field-value-change-event)])
+                    (conform-field field)])
                  form-fields))]))
 
 
@@ -47,10 +47,7 @@
                    :keys [open?
                           title
                           form
-                          submit-text
-                          cancel-event
-                          submit-event
-                          field-value-change-event]
+                          submit-text]
                    :or {submit-text "Submit"}}]
   [:div
    ;; [mdc/Data options]
@@ -61,13 +58,13 @@
        title])
     [:> mui/DialogContent
      [mdc/Data form]
-     [Form form submit-event field-value-change-event]]
+     [Form form]]
     [:> mui/DialogActions
      [:> mui/Button
-      {:on-click #(dispatch> cancel-event)}
+      {:on-click #(dispatch> [:material-desktop/desktop.form-dialog.canceled])}
       "Cancel"]
      [:> mui/Button
-      {:on-click #(dispatch> submit-event)
+      {:on-click #(dispatch> [:material-desktop/desktop.form-dialog.submitted])
        :color :primary}
       submit-text]]]])
 

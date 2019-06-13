@@ -11,7 +11,8 @@
 
    [material-desktop.api :refer [<subscribe dispatch>]]
    [material-desktop.components :as mdc]
-   [material-desktop.desktop.components.form-dialog :as form-dialog]))
+   [material-desktop.desktop.components.form-dialog :as form-dialog]
+   [material-desktop.desktop.components.menu-dialog :as menu-dialog]))
 
 
 (def theme {:palette mdc/palette
@@ -73,6 +74,7 @@
     {:theme base-theme}
     [DesktopAppBar appbar page-args]
     [DesktopWorkarea workarea page-args]
+    ;;[menu-dialog/MenuDialog!]
     [form-dialog/FormDialog!]]])
 
 

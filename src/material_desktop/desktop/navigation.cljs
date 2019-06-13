@@ -5,7 +5,8 @@
    [accountant.core :as accountant]
    [cemerick.url :as url]
 
-   [bindscript.api :refer [def-bindscript]]))
+   [bindscript.api :refer [def-bindscript]]
+   [model-driver.runtime.api :as model-driver]))
 
 
 (defn construct-page-path [page-key page-args]
@@ -31,7 +32,10 @@
   (tap> [::activate-page page-key args])
   (-> db
       (assoc-in [:material-desktop/desktop :current-page] page-key)
-      (update-in [:material-desktop/desktop :pages page-key :args] merge args)))
+      (update-in [:material-desktop/desktop :pages page-key :args] merge args)
+      (model-driver/dispatch-event [:desktop/page-switched
+                                    {:page-name (str page-key)
+                                     :page-args args}])))
 
 
 (defn activate-page-from-url [db]
